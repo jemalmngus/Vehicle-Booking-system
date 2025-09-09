@@ -23,12 +23,13 @@ class UserController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,passenger',
         ]);
-        if ($validator->fails()) return response()->json(['errors' => $validator->errors()], 422);
+        if ($validator->fails())
+            return response()->json(['errors' => $validator->errors()], 422);
         $data = $validator->validated();
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
@@ -41,7 +42,8 @@ class UserController
     public function show($id)
     {
         $user = User::find($id);
-        if (!$user) return response()->json(['message' => 'Not found'], 404);
+        if (!$user)
+            return response()->json(['message' => 'Not found'], 404);
         return response()->json($user);
     }
 
@@ -51,16 +53,19 @@ class UserController
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        if (!$user) return response()->json(['message' => 'Not found'], 404);
+        if (!$user)
+            return response()->json(['message' => 'Not found'], 404);
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|max:255|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:8',
             'role' => 'sometimes|in:admin,passenger',
         ]);
-        if ($validator->fails()) return response()->json(['errors' => $validator->errors()], 422);
+        if ($validator->fails())
+            return response()->json(['errors' => $validator->errors()], 422);
         $data = $validator->validated();
-        if (isset($data['password'])) $data['password'] = Hash::make($data['password']);
+        if (isset($data['password']))
+            $data['password'] = Hash::make($data['password']);
         $user->update($data);
         return response()->json($user);
     }
@@ -71,7 +76,8 @@ class UserController
     public function destroy($id)
     {
         $user = User::find($id);
-        if (!$user) return response()->json(['message' => 'Not found'], 404);
+        if (!$user)
+            return response()->json(['message' => 'Not found'], 404);
         $user->delete();
         return response()->json(['message' => 'User deleted successfully']);
     }

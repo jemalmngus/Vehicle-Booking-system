@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payments', PaymentController::class);
     Route::apiResource('notifications', NotificationController::class);
     Route::apiResource('trip-schedules', TripScheduleController::class);
+    Route::middleware('auth:sanctum')->get('/my-bookings', [BookingController::class, 'myBookings']);
 
     // Logout endpoint
     Route::apiResource('bookings', BookingController::class);

@@ -13,8 +13,9 @@ class VehicleController
      */
     public function index()
     {
-        $vehicles = Vehicle::with('type')->paginate(10);
+        $vehicles = Vehicle::with(['type', 'amenities'])->paginate(10);
         return response()->json($vehicles);
+
     }
 
     /**

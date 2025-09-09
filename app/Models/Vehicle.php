@@ -33,4 +33,10 @@ class Vehicle extends Model
     {
         return $this->hasMany(TripSchedule::class);
     }
+
+    public function amenities()
+    {
+        return $this->belongsToMany(Amenity::class);
+    }
+
 }

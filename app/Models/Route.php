@@ -18,6 +18,7 @@ class Route extends Model
         return $this->belongsTo(Station::class, 'end_station_id');
     }
 
+
     public function trips()
     {
         return $this->hasMany(Trip::class);

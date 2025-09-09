@@ -7,8 +7,24 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Facades\Auth;
 class BookingController
 {
+
+
+
+    public function myBookings()
+    {
+        $user = Auth::user();
+
+        $bookings = $user->bookings()->with(['trip', 'payment'])->latest()->paginate(100);
+
+        return response()->json([
+            'message' => 'Your bookings retrieved successfully.',
+            'data' => $bookings,
+        ]);
+    }
+
     /**
      * Display a listing of bookings.
      */
@@ -27,7 +43,6 @@ class BookingController
     {
         // Validation rules
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
             'trip_id' => 'required|exists:trips,id',
             'seat_number' => 'required|max:10',
             'status' => 'required|string|in:pending,confirmed,cancelled',
@@ -37,10 +52,16 @@ class BookingController
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Create booking
-        $booking = Booking::create($request->only('user_id', 'trip_id', 'seat_number', 'status'));
+        // Merge the authenticated user's ID into the data
+        $data = $validator->validated();
+        $data['user_id'] = auth()->id(); // or $request->user()->id
 
-        return response()->json($booking, 201);
+        $booking = Booking::create($data);
+
+        return response()->json($booking->load(['user', 'trip']), 201);
+
+
+
     }
 
     /**
