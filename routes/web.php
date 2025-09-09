@@ -10,6 +10,7 @@ use App\Http\Controllers\SeatController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripScheduleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleTypeController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,5 +38,6 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('payments', PaymentController::class);
     Route::resource('notifications', NotificationController::class);
     Route::resource('trip-schedules', TripScheduleController::class);
+    Route::resource('users', UserController::class);
 });
 require __DIR__ . '/auth.php';

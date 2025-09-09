@@ -12,7 +12,17 @@ class VehicleTypeController
      */
     public function index()
     {
-        //
+        $vehicleTypes = VehicleType::paginate(100);
+
+        return view('admin.vehicle-types.index', compact('vehicleTypes'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('admin.vehicle-types.create');
     }
 
     /**
@@ -20,7 +30,14 @@ class VehicleTypeController
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:vehicle_types,name',
+            'price_per_km' => 'required|numeric|min:0',
+        ]);
+
+        VehicleType::create($validated);
+
+        return redirect()->route('vehicle-types.index')->with('success', 'Vehicle type created successfully.');
     }
 
     /**
@@ -28,7 +45,9 @@ class VehicleTypeController
      */
     public function show(VehicleType $vehicleType)
     {
-        //
+        $vehicleType->load('vehicles');
+
+        return view('admin.vehicle-types.show', compact('vehicleType'));
     }
 
     /**
@@ -36,7 +55,22 @@ class VehicleTypeController
      */
     public function update(Request $request, VehicleType $vehicleType)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:vehicle_types,name,' . $vehicleType->id,
+            'price_per_km' => 'required|numeric|min:0',
+        ]);
+
+        $vehicleType->update($validated);
+
+        return redirect()->route('vehicle-types.index')->with('success', 'Vehicle type updated successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(VehicleType $vehicleType)
+    {
+        return view('admin.vehicle-types.edit', compact('vehicleType'));
     }
 
     /**
@@ -44,6 +78,8 @@ class VehicleTypeController
      */
     public function destroy(VehicleType $vehicleType)
     {
-        //
+        $vehicleType->delete();
+
+        return redirect()->route('vehicle-types.index')->with('success', 'Vehicle type deleted successfully.');
     }
 }

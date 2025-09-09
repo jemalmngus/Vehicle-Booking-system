@@ -12,7 +12,8 @@ use App\Http\Controllers\api\{
     PaymentController,
     NotificationController,
     TripScheduleController,
-    AuthController
+    AuthController,
+    UserController
 };
 
 // Public API Endpoints (Register & Login)
@@ -26,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('vehicle-types', VehicleTypeController::class);
     Route::apiResource('stations', StationController::class);
     Route::apiResource('routes', RouteController::class);
+    Route::apiResource('user', UserController::class);
     Route::apiResource('trips', TripController::class);
     Route::apiResource('seats', SeatController::class);
     Route::apiResource('payments', PaymentController::class);

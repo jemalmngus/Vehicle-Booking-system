@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Route;
+use App\Models\Station;
 use Illuminate\Http\Request;
 
 class RouteController
@@ -12,7 +13,19 @@ class RouteController
      */
     public function index()
     {
-        //
+        $routes = Route::with(['startStation', 'endStation'])->paginate(100);
+
+        return view('admin.routes.index', compact('routes'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $stations = Station::all();
+
+        return view('admin.routes.create', compact('stations'));
     }
 
     /**
@@ -20,7 +33,15 @@ class RouteController
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'start_station_id' => 'required|exists:stations,id|different:end_station_id',
+            'end_station_id' => 'required|exists:stations,id',
+            'distance_km' => 'required|numeric|min:0',
+        ]);
+
+        Route::create($validated);
+
+        return redirect()->route('routes.index')->with('success', 'Route created successfully.');
     }
 
     /**
@@ -28,7 +49,9 @@ class RouteController
      */
     public function show(Route $route)
     {
-        //
+        $route->load(['startStation', 'endStation', 'trips.vehicle', 'schedules.vehicle']);
+
+        return view('admin.routes.show', compact('route'));
     }
 
     /**
@@ -36,7 +59,25 @@ class RouteController
      */
     public function update(Request $request, Route $route)
     {
-        //
+        $validated = $request->validate([
+            'start_station_id' => 'required|exists:stations,id|different:end_station_id',
+            'end_station_id' => 'required|exists:stations,id',
+            'distance_km' => 'required|numeric|min:0',
+        ]);
+
+        $route->update($validated);
+
+        return redirect()->route('routes.index')->with('success', 'Route updated successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Route $route)
+    {
+        $stations = Station::all();
+
+        return view('admin.routes.edit', compact('route', 'stations'));
     }
 
     /**
@@ -44,6 +85,8 @@ class RouteController
      */
     public function destroy(Route $route)
     {
-        //
+        $route->delete();
+
+        return redirect()->route('routes.index')->with('success', 'Route deleted successfully.');
     }
 }

@@ -23,7 +23,7 @@
 
                 <!-- Dashboard -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link active">
+                    <a href="{{ route('dashboard') }}" class="nav-link active">
                         <i class="nav-icon bi bi-speedometer"></i>
                         <p>
                             Dashboard
